@@ -12,7 +12,7 @@ fi
 
 read -p "Specify username [$DEFAULT_USER]: " USER
 # default user
-if [ ! -n "$USER" ]
+if [ -z "$USER" ]
 then
   USER="$DEFAULT_USER"
 fi

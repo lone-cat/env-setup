@@ -3,14 +3,20 @@
 ENVS=("prod" "dev" "stage")
 
 fill_environment_variable(){
+  local default_env=$(echo $ENV)
+  if [ -z "$default_env" ]
+  then
+    default_env="prod"
+  fi
+
   ENV=""
   while true
   do
-    read -p "Specify environment [prod]: " ENV
+    read -p "Specify environment [$default_env]: " ENV
     # default prod
-    if [ ! -n "$ENV" ]
+    if [ -z "$ENV" ]
     then
-      ENV="prod"
+      ENV="$default_env"
     fi
     # lowercase
     ENV=$(echo $ENV | tr '[:upper:]' '[:lower:]')
