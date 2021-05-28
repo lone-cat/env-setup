@@ -1,3 +1,4 @@
 #!/bin/bash
 
-. ./privileged_commands.prod.sh
+environment=stage
+. ./privileged_commands.prod.stage.prototype.sh

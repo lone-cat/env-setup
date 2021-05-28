@@ -9,26 +9,26 @@ fill_environment_variable(){
     default_env="prod"
   fi
 
-  ENV=""
+  environment=""
   while true
   do
-    read -p "Specify environment [$default_env]: " ENV
+    read -p "Specify environment [$default_env]: " environment
     # default prod
-    if [ -z "$ENV" ]
+    if [ -z "$environment" ]
     then
-      ENV="$default_env"
+      environment="$default_env"
     fi
     # lowercase
-    ENV=$(echo $ENV | tr '[:upper:]' '[:lower:]')
+    environment=$(echo $environment | tr '[:upper:]' '[:lower:]')
     # in array of possible envs
     for goodenv in ${ENVS[@]}
     do
-      if [ "$ENV" == "$goodenv" ]
+      if [ "$environment" == "$goodenv" ]
       then
         return
       fi
     done
-    echo "Invalid environment \"$ENV\" specified! Should be one of [${ENVS[@]}]."
+    echo "Invalid environment \"$environment\" specified! Should be one of [${ENVS[@]}]."
   done
 }
 
@@ -40,14 +40,14 @@ run_priviledged_block(){
   else
     local sudo=""
   fi
-  #echo "$sudo./privileged_commands.$ENV.sh"
-  bash -c "$sudo./privileged_commands.$ENV.sh $(whoami)"
+  #echo "$sudo./privileged_commands.$environment.sh"
+  bash -c "$sudo./privileged_commands.sh $environment $(whoami)"
 }
 
 fill_environment_variable
 
 echo ""
-echo "PREPARING WORKSPACE FOR ENVIRONMENT \"$ENV\"..."
+echo "PREPARING WORKSPACE FOR ENVIRONMENT \"$environment\"..."
 
 is_sudoer=`groups "$(id -un)" | grep -q ' sudo ' && echo 1 || echo 0`
 user_id=`id -u`
@@ -63,7 +63,8 @@ else
   else
     echo "You have not enough privileges. Run script as user with sudo privileges or root!"
   fi
-  bash -c "./unprivileged_commands.sh $ENV"
+
+  . ./unprivileged_commands.sh
 fi
 
 echo "FINISHED."
