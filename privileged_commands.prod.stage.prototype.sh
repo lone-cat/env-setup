@@ -10,9 +10,6 @@ else
   DEFAULT_USER=$(whoami)
 fi
 
-echo $1
-exit
-
 read -p "Specify username [$DEFAULT_USER]: " USER
 # default user
 if [ -z "$USER" ]
