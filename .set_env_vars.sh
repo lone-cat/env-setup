@@ -14,7 +14,7 @@ env_file="/etc/profile.d/alex-env.sh"
 # add env vars for docker-compose
 old_ifs=$IFS
 IFS=$'\n'
-source_file="./env.$environment"
+source_file="./.env.$environment"
 
 env_file_updated=0
 
