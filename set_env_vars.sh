@@ -16,7 +16,6 @@ old_ifs=$IFS
 IFS=$'\n'
 source_file="./env.$environment"
 
-
 env_file_updated=0
 
 if ! [ -f $env_file ]

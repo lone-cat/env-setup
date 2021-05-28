@@ -1,24 +1,19 @@
 #!/bin/bash
 
-echo ""
-echo "BEGIN EXECUTION OF PRIVILEGED PART..."
-
-if [ -n "$1" ]
+if [ -z "$default_user" ]
 then
-  DEFAULT_USER=$1
-else
-  DEFAULT_USER=$(whoami)
+  default_user=$(whoami)
 fi
 
-read -p "Specify username [$DEFAULT_USER]: " USER
+read -p "Specify username [$default_user]: " user
 # default user
-if [ -z "$USER" ]
+if [ -z "$user" ]
 then
-  USER="$DEFAULT_USER"
+  user="$default_user"
 fi
 
-adduser $USER
-usermod -aG sudo $USER
+adduser $user
+usermod -aG sudo $user
 
 # renew package list
 apt-get update
@@ -40,7 +35,7 @@ apt-get update
 apt-get install docker-ce docker-ce-cli containerd.io
 
 # Add to docker group to run docker from user
-usermod -aG docker $USER
+usermod -aG docker $user
 
 
 ### docker - установка ч.2 - docker-compose
@@ -49,8 +44,3 @@ usermod -aG docker $USER
 curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 chmod +x /usr/local/bin/docker-compose
 
-global=true
-. ./set_env_vars.sh
-
-echo "FINISHED EXECUTION OF PRIVILEGED PART."
-echo ""
