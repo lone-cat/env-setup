@@ -2,13 +2,23 @@
 
 envs=("prod" "dev" "stage")
 
+function get_env_id() {
+  local environment=$1
+  for i in "${!envs[@]}"; do
+    if [[ "${envs[$i]}" = "$environment" ]]; then
+      return $i
+    fi
+  done
+  return 255
+}
+
 get_environment_int(){
   local default_env
-  if [ -n $1 ]
+  if [ -n "$1" ]
   then
     default_env=$1
   else
-    default_env=$(echo $ENV)
+    default_env=$ENV
   fi
 
   if [ -z "$default_env" ]
@@ -29,17 +39,20 @@ get_environment_int(){
     environment=$(echo $environment | tr '[:upper:]' '[:lower:]')
     # in array of possible envs
 
-    for i in "${!envs[@]}"; do
-       if [[ "${envs[$i]}" = "$environment" ]]; then
-           return $i
-       fi
-    done
-    echo "Invalid environment \"$environment\" specified! Should be one of [${envs[@]}]."
+    get_env_id "$environment"
+    if [ $? -eq 255 ]
+    then
+      echo "Invalid environment \"$environment\" specified! Should be one of [${envs[@]}]."
+    else
+      return $?
+    fi
   done
 }
 
+
+
 function get_env() {
-  if [ -n $1 ]
+  if [ -n "$1" ]
   then
     get_environment_int $1
   else

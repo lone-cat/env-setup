@@ -2,7 +2,7 @@
 
 # input user for git if not set
 test=$(git config --global user.name)
-if [ -n "$test" ]
+if [ -z "$test" ]
 then
   read -p "Input GIT user name: " user
   if [ -n "$user" ]

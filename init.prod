@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ./env.common && \
-./env.type && \
+./env.type prod && \
 ./git.common && \
 ./docker.install && \
 ./docker.user && \

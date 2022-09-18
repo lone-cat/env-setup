@@ -13,7 +13,7 @@ if [ ! $is_root = 1 ]
 then
   if [ $is_sudoer = 1 ]
   then
-    if [ -z ${BASH_SOURCE[1]} ]
+    if [ -z "${BASH_SOURCE[1]}" ]
     then
       echo "script not defined!"
       exit 1

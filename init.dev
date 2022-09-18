@@ -1,17 +1,11 @@
 #!/bin/bash
 
-. ./functions/environment
-env=$(get_env "development")
-
-echo $env
-exit
-
 . ./functions/wsl
 
 ./git.common && \
 ./git.dev && \
 ./env.common && \
-./env.type && \
+./env.type dev && \
 (
 if ! is_wsl
 then
