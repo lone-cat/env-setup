@@ -7,7 +7,7 @@
 ./env.common && \
 ./env.type dev && \
 (
-if ! is_wsl
+if is_wsl
 then
   ./env.wsl
 else
