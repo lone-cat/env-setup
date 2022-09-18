@@ -2,14 +2,21 @@
 
 envs=("prod" "dev" "stage")
 
-fill_environment_variable(){
-  local default_env=$(echo $ENV)
-  if [ -z "$default_env" ]
+get_environment_int(){
+  local default_env
+  if [ -n $1 ]
   then
-    default_env="prod"
+    default_env=$1
+  else
+    default_env=$(echo $ENV)
   fi
 
-  environment=""
+  if [ -z "$default_env" ]
+  then
+    default_env=${envs[0]}
+  fi
+
+  local environment=""
   while true
   do
     read -p "Specify environment [$default_env]: " environment
@@ -21,15 +28,23 @@ fill_environment_variable(){
     # lowercase
     environment=$(echo $environment | tr '[:upper:]' '[:lower:]')
     # in array of possible envs
-    for goodenv in ${envs[@]}
-    do
-      if [ "$environment" == "$goodenv" ]
-      then
-        return
-      fi
+
+    for i in "${!envs[@]}"; do
+       if [[ "${envs[$i]}" = "$environment" ]]; then
+           return $i
+       fi
     done
     echo "Invalid environment \"$environment\" specified! Should be one of [${envs[@]}]."
   done
 }
 
-fill_environment_variable
+function get_env() {
+  if [ -n $1 ]
+  then
+    get_environment_int $1
+  else
+    get_environment_int
+  fi
+
+  echo ${envs[$?]}
+}

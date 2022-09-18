@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ./functions/ensure.root
+
+git config --system core.autocrlf input && exit 0 || exit 1

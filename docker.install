@@ -1,0 +1,19 @@
+#!/bin/bash
+
+. ./functions/ensure.root
+
+. ./functions/os
+osname=$(get_os_type)
+
+if [ "$osname" = "Debian" ]
+then
+  ./debian/docker.prepare || exit 1
+elif [ "$osname" = "Ubuntu" ]
+then
+  ./ubuntu/docker.prepare || exit 1
+else
+  echo "invalid OS type"
+  exit 1
+fi
+
+. ./docker.update

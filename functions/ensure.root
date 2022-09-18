@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ $(id -u) -eq 0 ]
+then
+  is_root=1
+else
+  is_root=0
+fi
+
+is_sudoer=`groups "$(id -un)" | grep -q ' sudo ' && echo 1 || echo 0`
+
+if [ ! $is_root = 1 ]
+then
+  if [ $is_sudoer = 1 ]
+  then
+    if [ -z ${BASH_SOURCE[1]} ]
+    then
+      echo "script not defined!"
+      exit 1
+    else
+      sudo bash -lc "${BASH_SOURCE[1]} $@"
+    fi
+    exit $?
+  else
+    echo "you are niether root nor in sudo group. can't continue"
+    exit 1
+  fi
+fi
+

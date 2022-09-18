@@ -1,0 +1,5 @@
+#!/bin/bash
+
+function get_os_type() {
+    echo $(lsb_release -i -s)
+}

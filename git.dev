@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# input user for git if not set
+test=$(git config --global user.name)
+if [ -n "$test" ]
+then
+  read -p "Input GIT user name: " user
+  if [ -n "$user" ]
+  then
+    git config --global user.name "$user" || exit 1
+  fi
+fi
+
+# input email for git if not set
+test=$(git config --global user.email)
+if [ -z "$test" ]
+then
+  read -p "Input GIT e-mail: " email
+  if [ -n "$email" ]
+  then
+    git config --global user.email "$email" || exit 1
+  fi
+fi

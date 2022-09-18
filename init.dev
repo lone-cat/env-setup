@@ -1,0 +1,26 @@
+#!/bin/bash
+
+. ./functions/environment
+env=$(get_env "development")
+
+echo $env
+exit
+
+. ./functions/wsl
+
+./git.common && \
+./git.dev && \
+./env.common && \
+./env.type && \
+(
+if ! is_wsl
+then
+  ./env.wsl
+else
+  echo "not wsl environment" && \
+  ./docker.install && \
+  ./docker.user
+fi
+) && \
+echo "ok" || \
+echo "error"

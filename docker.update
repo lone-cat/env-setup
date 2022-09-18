@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ./functions/ensure.root
+
+apt update && apt install docker-ce docker-ce-cli containerd.io docker-compose-plugin && exit 0 || exit 1

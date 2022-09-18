@@ -1,0 +1,93 @@
+#!/bin/bash
+
+function trim() {
+  if [ $# -lt 1 ]
+  then
+    echo ""
+  fi
+
+  echo $(echo $1 | sed -E 's/^\s*//' | sed -E 's/\s*$//')
+}
+
+function extract_var_name() {
+    if [ $# -lt 1 ]
+    then
+      return 1
+    fi
+
+    local varname="$1"
+
+    if [[ "$varname" == *"="* ]]
+    then
+      varname=`echo "$varname" | sed -E 's/^([^=]*)=.*/\1/'`
+    fi
+
+    echo $(trim "$varname")
+}
+
+function extract_var_value() {
+    if [ $# -lt 1 ]
+    then
+      return 1
+    fi
+
+    local val="$1"
+
+    if [[ "$val" != *"="* ]]
+    then
+      val=$(echo "$val=")
+    fi
+
+    val=`echo "$val" | sed -E 's/^[^=]*=(.*)$/\1/'`
+
+    echo $(trim "$val")
+}
+
+function set_envs() {
+  if [ $# -lt 1 ]
+  then
+    return 1
+  fi
+
+  local filename=$1
+  shift
+
+  if ! [ -f $filename ]
+  then
+    touch $filename
+    echo "created file $filename"
+  fi
+
+  local env_file_updated=0
+
+  for var in "$@"
+  do
+    local varname=$(extract_var_name "$var")
+    local varvalue=$(extract_var_value "$var")
+
+    local exists=`sed -E -n '/^\s*export\s+'$varname'\s*=.*$/p' $filename`
+
+    if [[ $exists != "" ]]
+    then
+      local existsval=$(echo "$exists" | sed -E 's/^[^#=]*=\s*(.*)$/\1/')
+      if [[ "$existsval" != "$varvalue" ]]
+      then
+        sed -i 's/^\s*export\s\+'"$varname"'\s*=.*$/# \0/ig' $filename
+        echo "export $var" >> $filename
+        echo "replaced $varname"
+        (( env_file_updated++ ))
+      fi
+    else
+      echo "export $var" >> $filename
+      echo "inserted $varname"
+      (( env_file_updated++ ))
+    fi
+
+  done
+
+  if [[ $env_file_updated > 0 ]]
+  then
+    echo "environment updated."
+  fi
+}
+

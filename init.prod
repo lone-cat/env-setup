@@ -1,0 +1,9 @@
+#!/bin/bash
+
+./env.common && \
+./env.type && \
+./git.common && \
+./docker.install && \
+./docker.user && \
+echo "ok" || \
+echo "error"

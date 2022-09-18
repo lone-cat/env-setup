@@ -1,0 +1,55 @@
+#!/bin/bash
+
+if [ $# -lt 1 ]
+then
+  if [ -z $USER ]
+  then
+    USER=$(whoami)
+  fi
+  read -p "Specify user to add to docker group [$USER]: " user
+  if [ -z $user ]
+  then
+    if [ -n $USER ]
+    then
+      user=$USER
+    fi
+  else
+    echo "user not specified!"
+    exit 1
+  fi
+
+  ${BASH_SOURCE} "$user"
+  exit $?
+fi
+
+. ./functions/ensure.root
+
+user=$1
+
+function is_docker_user() {
+  local grps
+  grps=$(groups "$1")
+  if [ $? -ne 0 ]
+  then
+    return 1
+  fi
+
+  local docker_user=$(echo "$grps" | grep -q -P ' docker( |$)' && echo 1 || echo 0)
+  echo $docker_user
+  return 0
+}
+
+docker_user=$(is_docker_user "$user")
+if [ $? -ne 0 ]
+then
+  exit 1
+fi
+
+if [ $docker_user -eq 1 ]
+then
+  echo "user $user already in docker group"
+else
+  echo "adding '$user' to 'docker' group"
+  usermod -aG docker "$user"
+fi
+
