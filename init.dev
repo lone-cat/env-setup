@@ -1,20 +1,9 @@
 #!/bin/bash
 
-. ./functions/wsl
-
 ./git.common && \
 ./git.dev && \
 ./env.common && \
 ./env.type dev && \
-(
-if is_wsl
-then
-  ./env.wsl
-else
-  echo "not wsl environment" && \
-  ./docker.install && \
-  ./docker.user
-fi
-) && \
+./env.dev && \
 echo "ok" || \
 echo "error"
